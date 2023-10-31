@@ -1,4 +1,6 @@
-﻿namespace CleanCode
+﻿using Microsoft.Data.SqlClient;
+
+namespace CleanCode
 {
     internal class Program
     {
@@ -6,15 +8,37 @@
         {
             Console.WriteLine("Hello, World!");
 
-           var order = new Order();
-            order.Payment = new BoletoPayment();
+            var order = new Order();
+
+        }
+        //pix,cartao,boleto,stripe,applepay...
+
+        public interface ISqlConnection
+        {
 
         }
 
-        //pix,cartao,boleto,stripe,applepay...
 
+        internal abstract class Payment
+        {
+            private const int _DaysToExpire = 2;
+            private readonly ISqlConnection _conn;
 
-        
+            public Payment(ISqlConnection conn)
+            {
+
+            }
+            public virtual void pay()
+            {
+                //IMPLEMENTACAO
+            }
+
+            // struct - value type
+            // 01/01/1900 com ? o padrao se torna null
+            public DateTime? ExpireDate { get; private set; }
+                = DateTime.Now.AddDays(_DaysToExpire);
+
+        }
 
         public class Order
         {
@@ -28,7 +52,7 @@
             Boleto = 3,
         }
 
-       
+
         //
         // SOLID
         // INTERFACE SEGREGATION PRINCIPLE
@@ -75,15 +99,7 @@
             }
         }
 
-        public abstract class Payment
-        {
-            public virtual void pay()
-            {
-               //IMPLEMENTACAO
 
-            }
-
-        }
 
     }
 }
